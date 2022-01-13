@@ -6,7 +6,6 @@ import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class SetupTestUsers {
 
@@ -42,7 +41,7 @@ public class SetupTestUsers {
     em.persist(both);
     em.getTransaction().commit();
     System.out.println("PW: " + user.getUserPass());
-    System.out.println("Testing user with OK password: " + user.verifyPassword("test"));
+    System.out.println("Testing user with OK password: " + user.verifyPassword("user1"));
     System.out.println("Testing user with wrong password: " + user.verifyPassword("test1"));
     System.out.println("Created TEST Users");
   }
