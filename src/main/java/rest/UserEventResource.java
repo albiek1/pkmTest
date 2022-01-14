@@ -4,10 +4,13 @@
  */
 package rest;
 
+import javax.ws.rs.Path;
+
 /**
  *
  * @author albie
  */
+@Path("")
 public class UserEventResource {
     
 }

@@ -5,8 +5,8 @@ on:
         tags:
             - stage-*
 
-    jobs:
-        build:
+        jobs:
+         build:
             
             runs-on: ubuntu-latest
             
