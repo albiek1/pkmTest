@@ -4,6 +4,7 @@
  */
 package rest;
 
+import entities.User;
 /**
  *
  * @author albie

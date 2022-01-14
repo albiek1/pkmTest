@@ -1,5 +1,6 @@
 package rest;
 
+import entities.Assignment;
 import entities.User;
 import entities.Role;
 
@@ -8,6 +9,8 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -64,6 +67,7 @@ public class LoginEndpointTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         try {
+            List<Assignment> assignments = new ArrayList<>();
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
             em.createQuery("delete from User").executeUpdate();
@@ -71,11 +75,11 @@ public class LoginEndpointTest {
 
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
-            User user = new User("user", "user1");
+            User user = new User("user", "user1", 11111111, "newUser@email.com", 0, assignments);
             user.addRole(userRole);
-            User admin = new User("admin", "admin1");
+            User admin = new User("admin", "admin1", 22222222, "admin@email.com", 0, assignments);
             admin.addRole(adminRole);
-            User both = new User("user_admin", "useradm");
+            User both = new User("user_admin", "useradm", 33333333, "dualUser@email.com", 0, assignments);
             both.addRole(userRole);
             both.addRole(adminRole);
             em.persist(userRole);
