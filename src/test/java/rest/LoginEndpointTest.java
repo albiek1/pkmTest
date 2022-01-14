@@ -1,5 +1,6 @@
 package rest;
 
+import entities.Assignment;
 import entities.User;
 import entities.Role;
 
@@ -8,6 +9,8 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -22,7 +25,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
-//Disabled
+@Disabled
 public class LoginEndpointTest {
 
     private static final int SERVER_PORT = 7777;
@@ -64,6 +67,7 @@ public class LoginEndpointTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         try {
+            List<Assignment> assignments = new ArrayList<>();
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
             em.createQuery("delete from User").executeUpdate();
@@ -71,11 +75,11 @@ public class LoginEndpointTest {
 
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
-            User user = new User("user", "test");
+            User user = new User("user", "user1", 11111111, "newUser@email.com", 0, assignments);
             user.addRole(userRole);
-            User admin = new User("admin", "test");
+            User admin = new User("admin", "admin1", 22222222, "admin@email.com", 0, assignments);
             admin.addRole(adminRole);
-            User both = new User("user_admin", "test");
+            User both = new User("user_admin", "useradm", 33333333, "dualUser@email.com", 0, assignments);
             both.addRole(userRole);
             both.addRole(adminRole);
             em.persist(userRole);
@@ -127,7 +131,7 @@ public class LoginEndpointTest {
 
     @Test
     public void testRestForAdmin() {
-        login("admin", "test");
+        login("admin", "admin1");
         given()
                 .contentType("application/json")
                 .accept(ContentType.JSON)
@@ -140,7 +144,7 @@ public class LoginEndpointTest {
 
     @Test
     public void testRestForUser() {
-        login("user", "test");
+        login("user", "user1");
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
@@ -152,7 +156,7 @@ public class LoginEndpointTest {
 
     @Test
     public void testAutorizedUserCannotAccesAdminPage() {
-        login("user", "test");
+        login("user", "user1");
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
@@ -163,7 +167,7 @@ public class LoginEndpointTest {
 
     @Test
     public void testAutorizedAdminCannotAccesUserPage() {
-        login("admin", "test");
+        login("admin", "admin1");
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
@@ -174,7 +178,7 @@ public class LoginEndpointTest {
 
     @Test
     public void testRestForMultiRole1() {
-        login("user_admin", "test");
+        login("user_admin", "useradm");
         given()
                 .contentType("application/json")
                 .accept(ContentType.JSON)
@@ -187,7 +191,7 @@ public class LoginEndpointTest {
 
     @Test
     public void testRestForMultiRole2() {
-        login("user_admin", "test");
+        login("user_admin", "useradm");
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
