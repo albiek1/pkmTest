@@ -30,23 +30,11 @@ public class User implements Serializable {
   @Size(min = 1, max = 255)
   @Column(name = "user_pass")
   private String userPass;
-  @Basic(optional = false)
-  @NotNull
-  @Column(name = "phone")
-  private int phone;
-  @Basic(optional = false)
-  @Column(name = "email", length = 25)
-  private String email;
-  @Basic(optional = false)
-  @Column(name = "account")
-  private int account;
   @JoinTable(name = "user_roles", joinColumns = {
     @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
     @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
-  @ManyToMany
-  private List<Assignment> assignments = new ArrayList<>();
   
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -66,13 +54,9 @@ public class User implements Serializable {
         return BCrypt.checkpw(pw, userPass);
     }
 
-  public User(String userName, String userPass, int phone, String email, int account, List<Assignment> assignments) {
+  public User(String userName, String userPass) {
     this.userName = userName;
     this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
-    this.phone = phone;
-    this.email = email;
-    this.account = account;
-    this.assignments = assignments;
   }
 
   public String getUserName() {
@@ -89,38 +73,6 @@ public class User implements Serializable {
 
   public void setUserPass(String userPass) {
     this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
-  }
-  
-  public int getPhone(){
-      return phone;
-  }
-  
-  public void setPhone(int phone){
-      this.phone = phone;
-  }
-  
-  public String getEmail(){
-      return email;
-  }
-  
-  public void setEmail(String email){
-      this.email = email;
-  }
-  
-  public int getAccount(){
-      return account;
-  }
-  
-  public void setAccount(int account){
-      this.account = account;
-  }
-  
-  public List<Assignment> getAssignments(){
-      return assignments;
-  }
-  
-  public void setAssignments(List<Assignment> assignments){
-      this.assignments = assignments;
   }
 
   public List<Role> getRoleList() {
